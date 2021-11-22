@@ -76,7 +76,7 @@ func getAuthenticatedUserStarredRepos(ctx *context.Context, client *github.Clien
 
 		lang := r.GetLanguage()
 		if len(lang) == 0 {
-			lang = "(N/A)"
+			lang = "(NA)"
 		}
 
 		s = append(s, starredRepository{
@@ -147,14 +147,20 @@ func main() {
 	fmt.Printf("\n")
 	for _, lang := range langs {
 		fmt.Printf("\n## %s\n\n", lang)
+		fmt.Printf("[:top: back to top](#summary)\n\n")
 
 		for _, repo := range organizedRepos[lang] {
-			fmt.Printf("### `%s` (%d stars)\n\n", repo.name, repo.stars)
+			repoAndOwner := fmt.Sprintf("%s/%s", repo.owner, repo.name)
+			repoUrl := fmt.Sprintf("https://github.com/%s", repoAndOwner)
+
+			fmt.Printf("### `%s`\n\n", repo.name)
+			fmt.Printf("  - [%s](%s) | :star: %d \n", repoAndOwner, repoUrl, repo.stars)
 
 			if len(repo.description) > 0 {
-				repoUrl := fmt.Sprintf("https://github.com/%s/%s", repo.owner, repo.name)
-				fmt.Printf("[%s](%s) | %s\n\n", strings.Replace(repoUrl, "https://", "", 1), repoUrl, repo.description)
+				fmt.Printf("  - %s\n", repo.description)
 			}
+
+			fmt.Printf("\n")
 		}
 	}
 }
