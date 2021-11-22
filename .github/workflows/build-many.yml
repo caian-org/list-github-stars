@@ -61,6 +61,12 @@ jobs:
         if: steps.cache-go-pkgs.outputs.cache-hit != 'true'
         run: go get
 
+      - name: Pre-build steps
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ];  then sudo apt-get install -y upx; fi
+          if [ "${{ matrix.os }}" = "macos-latest" ];   then brew install upx; fi
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then choco install upx; fi
+
       - name: Build
         run: make release
 
