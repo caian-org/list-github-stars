@@ -2,6 +2,10 @@
 
 ARTIFACT = list-github-stars
 
+ifeq ($(OS),Windows_NT)
+	ARTIFACT = list-github-stars.exe
+endif
+
 
 build:
 	@go build
