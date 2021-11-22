@@ -14,6 +14,7 @@ type starredRepository struct {
 	owner       string
 	name        string
 	description string
+	language    string
 	stars       int
 }
 
@@ -53,18 +54,24 @@ func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client
 		},
 	}
 
-	starreds, _, err := client.Activity.ListStarred(ctx, login, opts)
+	sts, _, err := client.Activity.ListStarred(ctx, login, opts)
 	if err != nil {
 		panic(err)
 	}
 
 	s := []starredRepository{}
-	for _, starred := range starreds {
+	for _, starred := range sts {
+		r := starred.GetRepository()
+		if r == nil {
+			continue
+		}
+
 		s = append(s, starredRepository{
-			owner:       *starred.Repository.Owner.Login,
-			name:        *starred.Repository.Name,
-			description: *starred.Repository.Description,
-			stars:       *starred.Repository.StargazersCount,
+			owner:       r.GetOwner().GetLogin(),
+			name:        r.GetName(),
+			description: r.GetDescription(),
+			language:    r.GetLanguage(),
+			stars:       r.GetStargazersCount(),
 		})
 	}
 
@@ -78,8 +85,36 @@ func main() {
 	authenticatedUser := getAuthenticatedUser(ctx, client)
 	fmt.Printf("authenticated as @%s (%s)\n", *authenticatedUser.Login, *authenticatedUser.Name)
 
-	starred := getAuthenticatedUserStarredRepos(ctx, client, *authenticatedUser.Login, 1)
-	for _, s := range starred {
-		fmt.Println(s.name)
+	page := 1
+	starred := []starredRepository{}
+
+	fmt.Println("fetching starred repositories")
+
+	// loop until we got all the starred repos
+	for {
+		s := getAuthenticatedUserStarredRepos(ctx, client, *authenticatedUser.Login, page)
+		if len(s) == 0 {
+			break
+		}
+
+		starred = append(starred, s...)
+		page++
 	}
+
+	fmt.Printf("got %d results\n", len(starred))
+
+	file, err := os.Create("out.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("writing file")
+
+	defer file.Close()
+	for _, s := range starred {
+		file.WriteString(fmt.Sprintf("%s/%s (%s, %d stars)\n", s.owner, s.name, s.language, s.stars))
+		file.WriteString(fmt.Sprintf("%s\n\n", s.description))
+	}
+
+	fmt.Println("done")
 }
