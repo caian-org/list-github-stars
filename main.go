@@ -10,6 +10,13 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type starredRepository struct {
+    owner string
+    name string
+    description string
+    stars int
+}
+
 func getGitHubTokenFromEnv() string {
     token_var := "GITHUB_AUTH_TOKEN"
     token := os.Getenv(token_var)
@@ -29,15 +36,50 @@ func getOAuthClient(token string) (context.Context, *http.Client) {
     return ctx, oauth2.NewClient(ctx, ts)
 }
 
-func main() {
-    ctx, oauthClient := getOAuthClient(getGitHubTokenFromEnv())
-    client := github.NewClient(oauthClient)
-
+func getAuthenticatedUser(ctx context.Context, client *github.Client) *github.User {
     user, _, err := client.Users.Get(ctx, "")
     if err != nil {
         panic(err)
     }
 
-    login := *user.Login
-    fmt.Printf("authenticated as \"%s\"\n", login)
+    return user
+}
+
+func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client, login string, page int) []starredRepository {
+    opts := &github.ActivityListStarredOptions{
+        ListOptions: github.ListOptions{
+            Page: page,
+            PerPage: 50,
+        },
+    }
+
+    starreds, _, err := client.Activity.ListStarred(ctx, login, opts)
+    if err != nil {
+        panic(err)
+    }
+
+    s := []starredRepository{}
+    for _, starred := range starreds {
+        s = append(s, starredRepository{
+            owner: *starred.Repository.Owner.Login,
+            name: *starred.Repository.Name,
+            description: *starred.Repository.Description,
+            stars: *starred.Repository.StargazersCount,
+        })
+    }
+
+    return s
+}
+
+func main() {
+    ctx, oauthClient := getOAuthClient(getGitHubTokenFromEnv())
+    client := github.NewClient(oauthClient)
+
+    authenticatedUser := getAuthenticatedUser(ctx, client)
+    fmt.Printf("authenticated as @%s (%s)\n", *authenticatedUser.Login, *authenticatedUser.Name)
+
+    starred := getAuthenticatedUserStarredRepos(ctx, client, *authenticatedUser.Login, 1)
+    for _, s := range starred {
+        fmt.Println(s.name)
+    }
 }
