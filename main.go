@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sort"
+	"strings"
+	"unicode"
 
 	"github.com/google/go-github/v40/github"
+	"github.com/gosimple/slug"
 	"golang.org/x/oauth2"
 )
 
@@ -16,6 +20,10 @@ type starredRepository struct {
 	description string
 	language    string
 	stars       int
+}
+
+func toLower(v string) string {
+	return strings.Map(unicode.ToLower, v)
 }
 
 func getGitHubTokenFromEnv() string {
@@ -28,17 +36,17 @@ func getGitHubTokenFromEnv() string {
 	return token
 }
 
-func getOAuthClient(token string) (context.Context, *http.Client) {
+func getOAuthClient(token string) (*context.Context, *http.Client) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
 
-	return ctx, oauth2.NewClient(ctx, ts)
+	return &ctx, oauth2.NewClient(ctx, ts)
 }
 
-func getAuthenticatedUser(ctx context.Context, client *github.Client) *github.User {
-	user, _, err := client.Users.Get(ctx, "")
+func getAuthenticatedUser(ctx *context.Context, client *github.Client) *github.User {
+	user, _, err := client.Users.Get(*ctx, "")
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +54,7 @@ func getAuthenticatedUser(ctx context.Context, client *github.Client) *github.Us
 	return user
 }
 
-func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client, login string, page int) []starredRepository {
+func getAuthenticatedUserStarredRepos(ctx *context.Context, client *github.Client, login string, page int) []starredRepository {
 	opts := &github.ActivityListStarredOptions{
 		ListOptions: github.ListOptions{
 			Page:    page,
@@ -54,7 +62,7 @@ func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client
 		},
 	}
 
-	sts, _, err := client.Activity.ListStarred(ctx, login, opts)
+	sts, _, err := client.Activity.ListStarred(*ctx, login, opts)
 	if err != nil {
 		panic(err)
 	}
@@ -66,11 +74,16 @@ func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client
 			continue
 		}
 
+		lang := r.GetLanguage()
+		if len(lang) == 0 {
+			lang = "(N/A)"
+		}
+
 		s = append(s, starredRepository{
 			owner:       r.GetOwner().GetLogin(),
 			name:        r.GetName(),
 			description: r.GetDescription(),
-			language:    r.GetLanguage(),
+			language:    lang,
 			stars:       r.GetStargazersCount(),
 		})
 	}
@@ -78,17 +91,37 @@ func getAuthenticatedUserStarredRepos(ctx context.Context, client *github.Client
 	return s
 }
 
+func organizeReposByLanguage(starred *[]starredRepository) ([]string, map[string][]starredRepository) {
+	organizedRepos := make(map[string][]starredRepository)
+
+	for _, s := range *starred {
+		_, found := organizedRepos[s.language]
+		if !found {
+			organizedRepos[s.language] = []starredRepository{}
+		}
+
+		organizedRepos[s.language] = append(organizedRepos[s.language], s)
+	}
+
+	langs := []string{}
+	for k, v := range organizedRepos {
+		langs = append(langs, k)
+		sort.Slice(organizedRepos[k], func(i, j int) bool { return toLower(v[i].name) < toLower(v[j].name) })
+	}
+
+	sort.Slice(langs, func(i, j int) bool { return toLower(langs[i]) < toLower(langs[j]) })
+
+	return langs, organizedRepos
+}
+
 func main() {
 	ctx, oauthClient := getOAuthClient(getGitHubTokenFromEnv())
 	client := github.NewClient(oauthClient)
 
 	authenticatedUser := getAuthenticatedUser(ctx, client)
-	fmt.Printf("authenticated as @%s (%s)\n", *authenticatedUser.Login, *authenticatedUser.Name)
 
 	page := 1
 	starred := []starredRepository{}
-
-	fmt.Println("fetching starred repositories")
 
 	// loop until we got all the starred repos
 	for {
@@ -101,20 +134,27 @@ func main() {
 		page++
 	}
 
-	fmt.Printf("got %d results\n", len(starred))
+	langs, organizedRepos := organizeReposByLanguage(&starred)
 
-	file, err := os.Create("out.txt")
-	if err != nil {
-		panic(err)
+	fmt.Printf("# GitHub Stars\n\n")
+	fmt.Printf("Starred by [@%s (%s)](%s).\n\n\n", *authenticatedUser.Login, *authenticatedUser.Name, *authenticatedUser.URL)
+
+	fmt.Printf("## Summary\n\n")
+	for _, lang := range langs {
+		fmt.Printf("  - [%s](#%s)\n", lang, slug.Make(lang))
 	}
 
-	fmt.Println("writing file")
+	fmt.Printf("\n")
+	for _, lang := range langs {
+		fmt.Printf("\n## %s\n\n", lang)
 
-	defer file.Close()
-	for _, s := range starred {
-		file.WriteString(fmt.Sprintf("%s/%s (%s, %d stars)\n", s.owner, s.name, s.language, s.stars))
-		file.WriteString(fmt.Sprintf("%s\n\n", s.description))
+		for _, repo := range organizedRepos[lang] {
+			fmt.Printf("### `%s` (%d stars)\n\n", repo.name, repo.stars)
+
+			if len(repo.description) > 0 {
+				repoUrl := fmt.Sprintf("https://github.com/%s/%s", repo.owner, repo.name)
+				fmt.Printf("[%s](%s) | %s\n\n", strings.Replace(repoUrl, "https://", "", 1), repoUrl, repo.description)
+			}
+		}
 	}
-
-	fmt.Println("done")
 }
