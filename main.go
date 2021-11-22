@@ -147,14 +147,14 @@ func main() {
 	fmt.Printf("\n")
 	for _, lang := range langs {
 		fmt.Printf("\n## %s\n\n", lang)
-		fmt.Printf("[:top: back to top](#summary)\n\n")
+		fmt.Printf("[🔝 back to top](#summary)\n\n")
 
 		for _, repo := range organizedRepos[lang] {
 			repoAndOwner := fmt.Sprintf("%s/%s", repo.owner, repo.name)
 			repoUrl := fmt.Sprintf("https://github.com/%s", repoAndOwner)
 
 			fmt.Printf("### `%s`\n\n", repo.name)
-			fmt.Printf("  - [%s](%s) | :star: %d \n", repoAndOwner, repoUrl, repo.stars)
+			fmt.Printf("  - [%s](%s) | ⭐ %d \n", repoAndOwner, repoUrl, repo.stars)
 
 			if len(repo.description) > 0 {
 				fmt.Printf("  - %s\n", repo.description)
