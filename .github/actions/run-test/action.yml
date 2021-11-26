@@ -23,29 +23,6 @@ runs:
         name: artifact-${{ inputs.sha }}-${{ inputs.os }}
         workflow: build-many.yml
 
-    - name: Install GitHub CLI
-      run: |
-        if [ "${{ inputs.os }}" = "ubuntu-latest" ]; then
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-            | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-            | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-          sudo apt-get update
-          sudo apt-get install gh
-        fi
-
-        if [ "${{ inputs.os }}" = "macos-latest" ]; then
-          gem install bundler
-          brew install gh
-        fi
-
-        if [ "${{ inputs.os }}" = "windows-latest" ]; then
-          choco install gh
-        fi
-      shell: bash
-
     - name: Run and update
       run: |
         mv list-github-stars* lgs
