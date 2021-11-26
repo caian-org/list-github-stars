@@ -27,7 +27,7 @@ func toLower(v string) string {
 }
 
 func getGitHubTokenFromEnv() string {
-	token_var := "GITHUB_AUTH_TOKEN"
+	token_var := "GITHUB_TOKEN"
 	token := os.Getenv(token_var)
 	if len(token) == 0 {
 		panic(fmt.Sprintf("required environment variable %s is undefined", token_var))
