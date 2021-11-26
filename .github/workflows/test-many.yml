@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait for build to finish
-        uses: lewagon/wait-on-check-action@master
+        uses: lewagon/wait-on-check-action@v1.1.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.AUTH_TOKEN }}
           wait-interval: 20
           running-workflow-name: wait-build
 
@@ -38,11 +38,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Prepare and run tests
-        uses: ./.github/actions/test-routine
+        uses: ./.github/actions/run-test
         with:
           sha: ${{ github.sha }}
-          os: ${{ env.RUNNER_OS }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          os: ubuntu-latest
+          github-token: ${{ secrets.AUTH_TOKEN }}
 
   # ..........................................................................
   on-macos:
@@ -53,11 +53,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Prepare and run tests
-        uses: ./.github/actions/test-routine
+        uses: ./.github/actions/run-test
         with:
           sha: ${{ github.sha }}
-          os: ${{ env.RUNNER_OS }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          os: macos-latest
+          github-token: ${{ secrets.AUTH_TOKEN }}
 
   # ..........................................................................
   on-windows:
@@ -68,8 +68,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Prepare and run tests
-        uses: ./.github/actions/test-routine
+        uses: ./.github/actions/run-test
         with:
           sha: ${{ github.sha }}
-          os: ${{ env.RUNNER_OS }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          os: windows-latest
+          github-token: ${{ secrets.AUTH_TOKEN }}
