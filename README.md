@@ -3,7 +3,7 @@
 
 # list-github-stars
 
-<img src="icon.svg" height="210px" align="right"/>
+<img src="icon.svg" height="240px" align="right"/>
 
 Tiny CLI program capable of retrieving a GitHub user's starred repositories and
 formatting the data into a nice markdown document. You can see an example of
