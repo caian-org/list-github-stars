@@ -1,4 +1,5 @@
 [![Build & Check][gh-bnc-shield]][gh-bnc-url]
+[![Tests][gh-test-shield]][gh-test-url]
 [![GitHub tag][tag-shield]][tag-url]
 
 # list-github-stars
@@ -11,6 +12,9 @@ the program's output [here](https://gist.github.com/upsetbit/ada2117bd8c73a1e94e
 
 [gh-bnc-shield]: https://img.shields.io/github/workflow/status/caian-org/list-github-stars/build-many?label=build&logo=github&style=for-the-badge
 [gh-bnc-url]: https://github.com/caian-org/list-github-stars/actions/workflows/build-many.yml
+
+[gh-test-shield]: https://img.shields.io/github/workflow/status/caian-org/list-github-stars/test-many?label=test&logo=github&style=for-the-badge
+[gh-test-url]: https://github.com/caian-org/list-github-stars/actions/workflows/test-many.yml
 
 [tag-shield]: https://img.shields.io/github/tag/caian-org/list-github-stars.svg?logo=git&logoColor=FFF&style=for-the-badge
 [tag-url]: https://github.com/caian-org/list-github-stars/releases
@@ -42,6 +46,12 @@ to other formats. E.g.:
 
 [pat]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [pandoc]: https://pandoc.org
+
+### Run with Docker
+
+```sh
+docker run --rm -e GITHUB_TOKEN="your-github-auth-token" list-github-stars >> stars.md
+```
 
 
 ## License
