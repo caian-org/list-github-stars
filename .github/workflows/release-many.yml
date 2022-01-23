@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: wait-build
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Download linux artifact
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -43,22 +48,21 @@ jobs:
           path: windows-artifact
           workflow: build-many.yml
 
-      - name: Download vrelease
+      - name: Release new version
         run: |
-          curl -L -o vrelease https://github.com/vrelease/vrelease/releases/download/v0.3.2/vrelease-macos
+          export LINUX_ARTIFACT="lgs-linux-$TAG"
+          mv "linux-artifact/list-github-stars" "$LINUX_ARTIFACT"
+
+          export MACOS_ARTIFACT="lgs-macos-$TAG"
+          mv "macos-artifact/list-github-stars" "$MACOS_ARTIFACT"
+
+          export WINDOWS_ARTIFACT="lgs-windows-$TAG.exe"
+          mv "windows-artifact/list-github-stars.exe" "$WINDOWS_ARTIFACT"
+
+          curl -L -o vrelease https://github.com/vrelease/vrelease/releases/download/v0.3.2/vrelease-linux
           chmod +x vrelease
 
-      - name: Release new version
-        run:
-          export LINUX_ARTIFACT="lgs-linux-$TAG"
-          export MACOS_ARTIFACT="lgs-macos-$TAG"
-          export WINDOWS_ARTIFACT="lgs-windows-$TAG"
-
-          mv linux-artifact/list-github-stars "$LINUX_ARTIFACT"
-          mv macos-artifact/list-github-stars "$MACOS_ARTIFACT"
-          mv windows-artifact/list-github-stars.exe "$WINDOWS_ARTIFACT"
-
-          ./vrelease
+          ./vrelease \
             -add-checksum \
             -attach "$LINUX_ARTIFACT" \
             -attach "$MACOS_ARTIFACT" \
