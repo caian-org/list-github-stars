@@ -1,11 +1,9 @@
-name: release
+name: release-many
 
 on:
-  pull_request:
-    branches:
-      - "*"
-    paths-ignore:
-      - "**.md"
+  push:
+    tags:
+      - "v*"
 
 jobs:
   wait-build:
@@ -14,7 +12,7 @@ jobs:
       - name: Wait for build to finish
         uses: lewagon/wait-on-check-action@v1.1.1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.sha }}
           repo-token: ${{ secrets.AUTH_TOKEN }}
           wait-interval: 10
           running-workflow-name: wait-build
@@ -28,25 +26,43 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           name: artifact-${{ github.sha }}-ubuntu-latest
-          path: lgs-linux
+          path: linux-artifact
           workflow: build-many.yml
 
       - name: Download macos artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           name: artifact-${{ github.sha }}-macos-latest
-          path: lgs-macos
+          path: macos-artifact
           workflow: build-many.yml
 
       - name: Download windows artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           name: artifact-${{ github.sha }}-windows-latest
-          path: lgs-windows
+          path: windows-artifact
           workflow: build-many.yml
 
-      - name: List
-        run: ls -lash
+      - name: Download vrelease
+        run: |
+          curl -L -o vrelease https://github.com/vrelease/vrelease/releases/download/v0.3.2/vrelease-macos
+          chmod +x vrelease
 
-      - name: Tree
-        run: tree
+      - name: Release new version
+        run:
+          export LINUX_ARTIFACT="lgs-linux-$TAG"
+          export MACOS_ARTIFACT="lgs-macos-$TAG"
+          export WINDOWS_ARTIFACT="lgs-windows-$TAG"
+
+          mv linux-artifact/list-github-stars "$LINUX_ARTIFACT"
+          mv macos-artifact/list-github-stars "$MACOS_ARTIFACT"
+          mv windows-artifact/list-github-stars.exe "$WINDOWS_ARTIFACT"
+
+          ./vrelease
+            -add-checksum \
+            -attach "$LINUX_ARTIFACT" \
+            -attach "$MACOS_ARTIFACT" \
+            -attach "$WINDOWS_ARTIFACT"
+        env:
+          TAG: ${{ github.ref_name }}
+          VRELEASE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
