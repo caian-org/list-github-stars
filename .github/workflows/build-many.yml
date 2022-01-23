@@ -2,8 +2,6 @@ name: build-many
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*"
     paths-ignore:
