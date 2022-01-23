@@ -18,6 +18,7 @@ jobs:
           repo-token: ${{ secrets.AUTH_TOKEN }}
           wait-interval: 10
           running-workflow-name: wait-build
+          allowed-conclusions: success,skipped,neutral
 
   release-many:
     runs-on: ubuntu-latest

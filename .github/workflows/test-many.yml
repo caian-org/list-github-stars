@@ -28,6 +28,7 @@ jobs:
           repo-token: ${{ secrets.AUTH_TOKEN }}
           wait-interval: 20
           running-workflow-name: wait-build
+          allowed-conclusions: success,skipped,neutral
 
   # ..........................................................................
   on-linux:
