@@ -1,0 +1,68 @@
+name: release-many
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  wait-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for build to finish
+        uses: lewagon/wait-on-check-action@v1.1.1
+        with:
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.AUTH_TOKEN }}
+          wait-interval: 10
+          running-workflow-name: wait-build
+          allowed-conclusions: success,skipped,neutral
+
+  release-many:
+    runs-on: ubuntu-latest
+    needs: wait-build
+    steps:
+      - name: Download linux artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-ubuntu-latest
+          path: linux-artifact
+          workflow: build-many.yml
+
+      - name: Download macos artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-macos-latest
+          path: macos-artifact
+          workflow: build-many.yml
+
+      - name: Download windows artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-windows-latest
+          path: windows-artifact
+          workflow: build-many.yml
+
+      - name: Download vrelease
+        run: |
+          curl -L -o vrelease https://github.com/vrelease/vrelease/releases/download/v0.3.2/vrelease-macos
+          chmod +x vrelease
+
+      - name: Release new version
+        run:
+          export LINUX_ARTIFACT="lgs-linux-$TAG"
+          export MACOS_ARTIFACT="lgs-macos-$TAG"
+          export WINDOWS_ARTIFACT="lgs-windows-$TAG"
+
+          mv linux-artifact/list-github-stars "$LINUX_ARTIFACT"
+          mv macos-artifact/list-github-stars "$MACOS_ARTIFACT"
+          mv windows-artifact/list-github-stars.exe "$WINDOWS_ARTIFACT"
+
+          ./vrelease
+            -add-checksum \
+            -attach "$LINUX_ARTIFACT" \
+            -attach "$MACOS_ARTIFACT" \
+            -attach "$WINDOWS_ARTIFACT"
+        env:
+          TAG: ${{ github.ref_name }}
+          VRELEASE_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
