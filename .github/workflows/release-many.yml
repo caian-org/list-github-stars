@@ -1,0 +1,47 @@
+name: release
+
+on:
+  pull_request:
+    branches:
+      - "*"
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  release-many:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for build to finish
+        uses: lewagon/wait-on-check-action@v1.1.1
+        with:
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.AUTH_TOKEN }}
+          wait-interval: 20
+          running-workflow-name: wait-build
+
+      - name: Download linux artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-ubuntu-latest
+          path: lgs-linux
+          workflow: build-many.yml
+
+      - name: Download macos artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-macos-latest
+          path: lgs-macos
+          workflow: build-many.yml
+
+      - name: Download windows artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: artifact-${{ github.sha }}-windows-latest
+          path: lgs-windows
+          workflow: build-many.yml
+
+      - name: List
+        run: ls -lash
+
+      - name: Tree
+        run: tree
