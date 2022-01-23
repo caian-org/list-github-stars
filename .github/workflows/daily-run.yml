@@ -1,0 +1,21 @@
+name: daily-run
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 3 * * *'
+
+jobs:
+  daily-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and run
+        run: |
+          curl -L -o lgs https://github.com/caian-org/list-github-stars/releases/download/v1.0.0/lgs-linux-v1.0.0
+          chmod +x lgs
+
+          ./lgs >> my-github-stars.md
+          gh gist edit ada2117bd8c73a1e94e49580fd5c7cf7 --add my-github-stars.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
