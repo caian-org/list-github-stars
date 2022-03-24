@@ -39,7 +39,7 @@ jobs:
 
       - name: Cache Go packages
         id: cache-go-pkgs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # In order:
           # * Module download cache
