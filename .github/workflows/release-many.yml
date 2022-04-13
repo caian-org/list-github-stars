@@ -2,8 +2,7 @@ name: release-many
 
 on:
   push:
-    tags:
-      - "v*"
+    tags: 'v*'
 
 jobs:
   wait-build:

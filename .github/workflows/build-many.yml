@@ -2,17 +2,13 @@ name: build-many
 
 on:
   push:
-    tags:
-      - "v*"
-    paths-ignore:
-      - "**.md"
+    tags: 'v*'
+    paths-ignore: '**.md'
+
   pull_request:
-    branches:
-      - "*"
-    tags:
-      - "*"
-    paths-ignore:
-      - "**.md"
+    branches: '*'
+    tags: '*'
+    paths-ignore: '**.md'
 
 jobs:
   multi-os:

@@ -2,10 +2,8 @@ name: test-many
 
 on:
   pull_request:
-    branches:
-      - "*"
-    paths-ignore:
-      - "**.md"
+    branches: '*'
+    paths-ignore: '**.md'
 
 defaults:
   run:
