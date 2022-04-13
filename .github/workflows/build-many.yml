@@ -72,7 +72,7 @@ jobs:
           mv list-github-stars* artifact
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: artifact-${{ github.sha }}-${{ matrix.os }}
           path: artifact
