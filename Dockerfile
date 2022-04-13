@@ -1,4 +1,4 @@
-FROM golang:1.18.0-alpine3.15 AS image
+FROM golang:1.18.1-alpine3.15 AS image
 
 FROM image AS base
 WORKDIR app
