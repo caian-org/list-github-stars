@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/google/go-github/v43 v43.0.0
-	github.com/gosimple/slug v1.12.0
-	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
+	github.com/gosimple/slug v1.13.0
+	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
 )
 
 require (
@@ -13,8 +13,8 @@ require (
 	github.com/google/go-github/v40 v40.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
-	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
-	golang.org/x/net v0.0.0-20220421235706-1d1ef9303861 // indirect
+	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
+	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 )
