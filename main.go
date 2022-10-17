@@ -137,7 +137,24 @@ func main() {
 	langs, organizedRepos := organizeReposByLanguage(&starred)
 
 	fmt.Printf("# GitHub Stars\n\n")
-	fmt.Printf("Starred by [@%s (%s)](%s).\n\n\n", *authenticatedUser.Login, *authenticatedUser.Name, *authenticatedUser.URL)
+
+	// print authenticated user's login, name, and URL
+	var (
+		login string
+		name  string
+		URL   string
+	)
+
+	if authenticatedUser.Login != nil {
+		login = *authenticatedUser.Login
+	}
+	if authenticatedUser.Name != nil {
+		name = *authenticatedUser.Name
+	}
+	if authenticatedUser.URL != nil {
+		URL = *authenticatedUser.URL
+	}
+	fmt.Printf("Starred by [@%s (%s)](%s).\n\n\n", login, name, URL)
 
 	fmt.Printf("## Summary\n\n")
 	for _, lang := range langs {
