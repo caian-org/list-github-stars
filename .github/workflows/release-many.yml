@@ -2,7 +2,7 @@ name: release-many
 
 on:
   push:
-    tags: 'v*'
+    tags: v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   wait-build:
@@ -16,6 +16,30 @@ jobs:
           wait-interval: 10
           running-workflow-name: wait-build
           allowed-conclusions: success,skipped,neutral
+
+  push-docker-image:
+    runs-on: ubuntu-latest
+    env:
+      image-name: caian/list-github-stars
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Retrieve metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.image-name }}
+          tags: type=semver,pattern={{version}}
+
+      - name: Build and push "${{ steps.meta.outputs.tags }}" tag
+        uses: ./.github/actions/build-and-push
+        with:
+          tagged-name: ${{ steps.meta.outputs.tags }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   release-many:
     runs-on: ubuntu-latest

@@ -2,13 +2,10 @@ name: build-many
 
 on:
   push:
-    tags: 'v*'
-    paths-ignore: '**.md'
+    tags: v[0-9]+.[0-9]+.[0-9]+
 
   pull_request:
-    branches: '*'
-    tags: '*'
-    paths-ignore: '**.md'
+    branches: *
 
 jobs:
   multi-os:
@@ -31,7 +28,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.17.x
+          go-version: 1.19.x
 
       - name: Cache Go packages
         id: cache-go-pkgs
