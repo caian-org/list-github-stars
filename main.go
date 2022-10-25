@@ -138,7 +138,7 @@ func main() {
 
 	// every user on GitHub MUST have a username (and therefore, a valid URL that points to it)
 	userLogin := *authenticatedUser.Login
-	userAccountUrl := *authenticatedUser.URL
+	userAccountUrl := fmt.Sprintf("https://github.com/%s", userLogin)
 
 	// but the display is optional and we should check it
 	userName := ""
@@ -150,8 +150,23 @@ func main() {
 	fmt.Printf("Starred by [@%s%s](%s).\n\n\n", userLogin, userName, userAccountUrl)
 
 	fmt.Printf("## Summary\n\n")
+
+	langSlugMap := map[string]int{}
+
 	for _, lang := range langs {
-		fmt.Printf("  - [%s](#%s)\n", lang, slug.Make(lang))
+		langSlug := slug.Make(lang)
+
+		v, ok := langSlugMap[langSlug]
+		if ok {
+			v += 1
+
+			langSlugMap[langSlug] += v
+			langSlug = fmt.Sprintf("%s-%d", langSlug, v)
+		} else {
+			langSlugMap[langSlug] = 0
+		}
+
+		fmt.Printf("  - [%s](#%s)\n", lang, langSlug)
 	}
 
 	fmt.Printf("\n")
