@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Download and run
         run: |
-          curl -L -o lgs https://github.com/caian-org/list-github-stars/releases/download/v1.1.0/lgs-linux-v1.1.0
+          curl -L -o lgs https://github.com/caian-org/list-github-stars/releases/download/v1.1.1/lgs-linux-v1.1.1
           chmod +x lgs
 
           ./lgs >> my-github-stars.md
