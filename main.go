@@ -136,8 +136,18 @@ func main() {
 
 	langs, organizedRepos := organizeReposByLanguage(&starred)
 
+	// every user on GitHub MUST have a username (and therefore, a valid URL that points to it)
+	userLogin := *authenticatedUser.Login
+	userAccountUrl := *authenticatedUser.URL
+
+	// but the display is optional and we should check it
+	userName := ""
+	if authenticatedUser.Name != nil {
+		userName = fmt.Sprintf(" (%s)", *authenticatedUser.Name)
+	}
+
 	fmt.Printf("# GitHub Stars\n\n")
-	fmt.Printf("Starred by [@%s (%s)](%s).\n\n\n", *authenticatedUser.Login, *authenticatedUser.Name, *authenticatedUser.URL)
+	fmt.Printf("Starred by [@%s%s](%s).\n\n\n", userLogin, userName, userAccountUrl)
 
 	fmt.Printf("## Summary\n\n")
 	for _, lang := range langs {
