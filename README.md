@@ -50,7 +50,7 @@ to other formats. E.g.:
 ### Run with Docker
 
 ```sh
-docker run --rm -e GITHUB_TOKEN="your-github-auth-token" list-github-stars >> stars.md
+docker run --rm -e GITHUB_TOKEN="your-github-auth-token" caian/list-github-stars >> stars.md
 ```
 
 
