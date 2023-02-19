@@ -2,7 +2,8 @@ name: test-many
 
 on:
   pull_request:
-    branches: '*'
+    branches:
+      - '*'
 
 defaults:
   run:
