@@ -172,7 +172,7 @@ func main() {
 	fmt.Printf("\n")
 	for _, lang := range langs {
 		fmt.Printf("\n## %s\n\n", lang)
-		fmt.Printf("[🔝 back to top](#summary)\n\n")
+		fmt.Printf("[🔝 back to the top](#summary)\n\n")
 
 		for _, repo := range organizedRepos[lang] {
 			repoAndOwner := fmt.Sprintf("%s/%s", repo.owner, repo.name)
