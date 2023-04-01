@@ -20,6 +20,6 @@ RUN CGO_ENABLED=0 \
     GOOS=linux \
     go build -v -trimpath -installsuffix cgo -o list-github-stars -ldflags "-s -w"
 
-FROM alpine:3.17.2@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501 AS runtime
+FROM alpine:3.17.3@sha256:124c7d2707904eea7431fffe91522a01e5a861a624ee31d03372cc1d138a3126 AS runtime
 COPY --from=build /go/app/list-github-stars /usr/local/bin
 ENTRYPOINT ["list-github-stars"]
