@@ -1,4 +1,4 @@
-FROM golang:1.20.1-alpine3.17@sha256:18da4399cedd9e383beb6b104d43aa1d48bd41167e312bb5306d72c51bd11548 AS image
+FROM golang:1.20.2-alpine3.17@sha256:87734b78d26a52260f303cf1b40df45b0797f972bd0250e56937c42114bf472c AS image
 LABEL maintainer="Caian Ertl <hi@caian.org>"
 
 FROM image AS base
