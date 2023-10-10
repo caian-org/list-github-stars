@@ -10,10 +10,11 @@ Tiny CLI program capable of retrieving a GitHub user's starred repositories and
 formatting the data into a nice markdown document. You can see an example of
 the program's output [here](https://gist.github.com/upsetbit/ada2117bd8c73a1e94e49580fd5c7cf7).
 
-[gh-bnc-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/build-many.yml?branch=master&label=build&logo=github&style=for-the-badge
+[gh-bnc-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/build-many.yml?label=build&logo=github&style=for-the-badge
+
 [gh-bnc-url]: https://github.com/caian-org/list-github-stars/actions/workflows/build-many.yml
 
-[gh-test-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/test-many.yml?branch=master&label=test&logo=github&style=for-the-badge
+[gh-test-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/test-many.yml?label=test&logo=github&style=for-the-badge
 [gh-test-url]: https://github.com/caian-org/list-github-stars/actions/workflows/test-many.yml
 
 [tag-shield]: https://img.shields.io/github/tag/caian-org/list-github-stars.svg?logo=git&logoColor=FFF&style=for-the-badge
