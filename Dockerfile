@@ -1,4 +1,4 @@
-FROM golang:1.21.2-alpine3.18 AS image
+FROM golang:1.21.4-alpine3.18 AS image
 LABEL maintainer="Caian Ertl <hi@caian.org>"
 
 FROM image AS base
