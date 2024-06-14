@@ -8,10 +8,9 @@ RUN apk update \
     && apk add --no-cache "make=~4.4" \
     && rm -rf /var/cache/apk/*
 
-COPY Makefile .
+COPY vendor/ ./vendor/
 COPY go.* .
-RUN go mod download
-
+COPY Makefile .
 COPY main.go .
 RUN --mount=type=cache,target="/root/.cache/go-build" make release
 
