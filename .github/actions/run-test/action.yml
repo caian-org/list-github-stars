@@ -25,7 +25,7 @@ runs:
 
     - name: Run and update
       run: |
-        mv list-github-stars* lgs
+        mv lgs* lgs
         chmod +x lgs
 
         ./lgs >> my-github-stars.md
