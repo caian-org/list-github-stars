@@ -16,11 +16,7 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
 ### Go Patch ###
-/vendor/
 /Godeps/
 
 ### Linux ###
@@ -95,4 +91,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,go
 
-list-github-stars
+lgs

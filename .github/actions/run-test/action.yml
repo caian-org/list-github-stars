@@ -25,10 +25,10 @@ runs:
 
     - name: Run and update
       run: |
-        mv list-github-stars* lgs
-        chmod +x lgs
+        mv lgs* _lgs
+        chmod +x _lgs
 
-        ./lgs >> my-github-stars.md
+        ./_lgs >> my-github-stars.md
         gh gist edit ada2117bd8c73a1e94e49580fd5c7cf7 --add my-github-stars.md
       shell: bash
       env:
