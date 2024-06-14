@@ -79,14 +79,14 @@ jobs:
           fetch-depth: 0
 
       - name: Build image
-        run: docker build -t list-github-stars .
+        run: docker build -t lgs .
 
       - name: Run and update
         run: |
           docker run \
             --rm \
             -e GITHUB_TOKEN="$GITHUB_TOKEN" \
-            list-github-stars >> my-github-stars.md
+            lgs >> my-github-stars.md
 
           gh gist edit ada2117bd8c73a1e94e49580fd5c7cf7 --add my-github-stars.md
         env:

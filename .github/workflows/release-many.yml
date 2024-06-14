@@ -75,13 +75,13 @@ jobs:
       - name: Release new version
         run: |
           export LINUX_ARTIFACT="lgs-linux-$TAG"
-          mv "linux-artifact/list-github-stars" "$LINUX_ARTIFACT"
+          mv "linux-artifact/lgs" "$LINUX_ARTIFACT"
 
           export MACOS_ARTIFACT="lgs-macos-$TAG"
-          mv "macos-artifact/list-github-stars" "$MACOS_ARTIFACT"
+          mv "macos-artifact/lgs" "$MACOS_ARTIFACT"
 
           export WINDOWS_ARTIFACT="lgs-windows-$TAG.exe"
-          mv "windows-artifact/list-github-stars.exe" "$WINDOWS_ARTIFACT"
+          mv "windows-artifact/lgs.exe" "$WINDOWS_ARTIFACT"
 
           curl -L -o vrelease https://github.com/vrelease/vrelease/releases/download/v0.3.2/vrelease-linux
           chmod +x vrelease
