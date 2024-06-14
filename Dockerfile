@@ -1,25 +1,22 @@
-FROM golang:1.21.2-alpine3.18 AS image
+# --------------------------------------------------------------------------------------------------
+FROM golang:1.22.4-alpine3.20 AS build
 LABEL maintainer="Caian Ertl <hi@caian.org>"
-
-FROM image AS base
+ENV GOCACHE=/root/.cache/go-build
 WORKDIR /go/app
-COPY go.mod .
-COPY go.sum .
-RUN go mod download \
-    && go list -m all \
-        | tail -n +2 \
-        | cut -f 1 -d " " \
-        | awk 'NF{print $0 "/..."}' \
-        | CGO_ENABLED=0 GOOS=linux xargs -n1 \
-            go build -v -trimpath -installsuffix cgo -i; echo "done"
 
-FROM base AS build
-WORKDIR /go/app
-COPY . .
-RUN CGO_ENABLED=0 \
-    GOOS=linux \
-    go build -v -trimpath -installsuffix cgo -o list-github-stars -ldflags "-s -w"
+RUN apk update \
+    && apk add --no-cache "make=~4.4" \
+    && rm -rf /var/cache/apk/*
 
-FROM alpine:3.18.4 AS runtime
-COPY --from=build /go/app/list-github-stars /usr/local/bin
-ENTRYPOINT ["list-github-stars"]
+COPY Makefile .
+COPY go.* .
+RUN go mod download
+
+COPY main.go .
+RUN --mount=type=cache,target="/root/.cache/go-build" make release
+
+# --------------------------------------------------------------------------------------------------
+FROM scratch
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /go/app/lgs /
+ENTRYPOINT ["/lgs"]

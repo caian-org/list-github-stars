@@ -1,19 +1,23 @@
 .DEFAULT_GOAL := build
 
-ARTIFACT = list-github-stars
-LDFLAGS = -w -s
+ARTIFACT = lgs
 
 ifeq ($(OS),Windows_NT)
-	ARTIFACT = list-github-stars.exe
+	ARTIFACT = lgs.exe
 endif
 
 
 build:
-	@go build
+	@go build -o $(ARTIFACT)
 
 release:
-	@go build -ldflags "$(LDFLAGS)"
-	@upx --best --lzma $(ARTIFACT)
+	@CGO_ENABLED=0 \
+		go build \
+		-v \
+		-trimpath \
+		-gcflags=all="-l -B" \
+		-ldflags="-w -s" \
+		-o $(ARTIFACT)
 
 run: build
 	@./$(ARTIFACT)
