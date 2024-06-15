@@ -21,7 +21,7 @@ the program's output [here](https://gist.github.com/upsetbit/ada2117bd8c73a1e94e
 [tag-url]: https://github.com/caian-org/list-github-stars/releases
 
 
-## Usage
+### Usage
 
 Authentication is made via [personal access tokens][pat]. Create a token,
 export to the environment variable `GITHUB_TOKEN` and run. The output is sent
