@@ -52,21 +52,21 @@ jobs:
           fetch-depth: 0
 
       - name: Download linux artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: artifact-${{ github.sha }}-ubuntu-latest
           path: linux-artifact
           workflow: build-many.yml
 
       - name: Download macos artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: artifact-${{ github.sha }}-macos-latest
           path: macos-artifact
           workflow: build-many.yml
 
       - name: Download windows artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           name: artifact-${{ github.sha }}-windows-latest
           path: windows-artifact
