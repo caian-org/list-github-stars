@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------------------
-FROM golang:1.22.4-alpine3.20 AS build
+FROM golang:1.23.0-alpine3.20 AS build
 LABEL maintainer="Caian Ertl <hi@caian.org>"
 ENV GOCACHE=/root/.cache/go-build
 WORKDIR /go/app
