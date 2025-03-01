@@ -1,11 +1,12 @@
 module github.com/caian-org/list-github-stars
 
 go 1.22
+toolchain go1.23.6
 
 require (
 	github.com/google/go-github/v43 v43.0.0
 	github.com/gosimple/slug v1.14.0
-	golang.org/x/oauth2 v0.21.0
+	golang.org/x/oauth2 v0.27.0
 )
 
 require (
