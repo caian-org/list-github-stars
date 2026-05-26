@@ -36,27 +36,6 @@ archives:
       - README.md
       - LICENSE*
 
-dockers_v2:
-  - id: lgs
-    ids:
-      - lgs
-    dockerfile: Dockerfile
-    images:
-      - ghcr.io/caian-org/list-github-stars
-    tags:
-      - '{{ .Tag }}'
-      - latest
-    platforms:
-      - linux/amd64
-    flags:
-      - --target=goreleaser-runtime
-    labels:
-      org.opencontainers.image.title: list-github-stars
-      org.opencontainers.image.description: List a GitHub user's starred repositories as Markdown
-      org.opencontainers.image.source: https://github.com/caian-org/list-github-stars
-      org.opencontainers.image.revision: '{{ .FullCommit }}'
-      org.opencontainers.image.version: '{{ .Version }}'
-
 checksum:
   name_template: 'checksums.txt'
   algorithm: sha256
