@@ -1,0 +1,88 @@
+version: 2
+
+project_name: list-github-stars
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: lgs
+    main: ./cmd/lgs
+    binary: lgs
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/caian-org/list-github-stars/cmd/lgs/cli.ProgramVersion={{.Version}}
+      - -X github.com/caian-org/list-github-stars/cmd/lgs/cli.ProgramCommitSHA={{.Commit}}
+      - -X github.com/caian-org/list-github-stars/cmd/lgs/cli.ProgramBuildTime={{.Date}}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - README.md
+      - LICENSE*
+
+dockers_v2:
+  - id: lgs
+    ids:
+      - lgs
+    dockerfile: Dockerfile
+    images:
+      - ghcr.io/caian-org/list-github-stars
+    tags:
+      - '{{ .Tag }}'
+      - latest
+    platforms:
+      - linux/amd64
+    flags:
+      - --target=goreleaser-runtime
+    labels:
+      org.opencontainers.image.title: list-github-stars
+      org.opencontainers.image.description: List a GitHub user's starred repositories as Markdown
+      org.opencontainers.image.source: https://github.com/caian-org/list-github-stars
+      org.opencontainers.image.revision: '{{ .FullCommit }}'
+      org.opencontainers.image.version: '{{ .Version }}'
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+      - Merge pull request
+      - Merge branch
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: Others
+      order: 999
+
+release:
+  draft: false
+  prerelease: auto
+  name_template: '{{ .ProjectName }} {{ .Version }}'
