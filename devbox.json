@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.2/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.26",
+    "just@1.51",
+    "goreleaser@2.15.4"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to devbox!' > /dev/null"
+    ],
+    "scripts": {
+      "test": [
+        "just test"
+      ],
+      "release-check": [
+        "goreleaser check"
+      ],
+      "release-snapshot": [
+        "goreleaser release --snapshot --clean"
+      ]
+    }
+  }
+}

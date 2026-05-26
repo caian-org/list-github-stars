@@ -1,6 +1,5 @@
-
-# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,go
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,go
+# Created by https://www.toptal.com/developers/gitignore/api/windows,linux,macos,go
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,macos,go
 
 ### Go ###
 # Binaries for programs and plugins
@@ -16,8 +15,18 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-### Go Patch ###
-/Godeps/
+# Go workspace file
+go.work
+
+# Local environment
+.env
+.env.*
+!.env.model
+
+# Local tool and release output
+.devbox/
+bin/
+dist/
 
 ### Linux ###
 *~
@@ -63,6 +72,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### macOS Patch ###
+# iCloud generated files
+*.icloud
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -89,6 +102,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,go
-
-lgs
+# End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,go

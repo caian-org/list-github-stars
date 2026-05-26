@@ -1,0 +1,9 @@
+[agents]
+max_threads = 4
+max_depth = 1
+
+[features]
+skills = true
+multi_agent = true
+unified_exec = true
+apply_patch_freeform = true

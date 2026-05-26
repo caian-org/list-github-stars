@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_notes": {
+    "purpose": "Claude Code project settings for list-github-stars. Domain guidance lives in .codex/skills and specialist subagents live in .claude/agents.",
+    "todo": [
+      "Consider SessionStart summaries pinning the GitHub API client major version (go-github/v76)."
+    ]
+  },
+  "hooks": {}
+}
