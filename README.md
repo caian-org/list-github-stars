@@ -1,66 +1,115 @@
-[![Build & Check][gh-bnc-shield]][gh-bnc-url]
-[![Tests][gh-test-shield]][gh-test-url]
+[![CI][gh-ci-shield]][gh-ci-url]
+[![Release][gh-release-shield]][gh-release-url]
 [![GitHub tag][tag-shield]][tag-url]
 
-# list-github-stars
+# `list-github-stars`
 
 <img src="icon.svg" height="240px" align="right"/>
 
-Tiny CLI program capable of retrieving a GitHub user's starred repositories and
-formatting the data into a nice markdown document. You can see an example of
-the program's output [here](https://gist.github.com/upsetbit/ada2117bd8c73a1e94e49580fd5c7cf7).
+Tiny CLI program capable of retrieving a GitHub user's starred repositories
+and formatting the data into a nice Markdown document. You can see an
+example of the program's output
+[here](https://gist.github.com/upsetbit/ada2117bd8c73a1e94e49580fd5c7cf7).
 
-[gh-bnc-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/build-many.yml?label=build&logo=github&style=for-the-badge
+[gh-ci-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/ci.yml?label=ci&logo=github&style=flat-square
+[gh-ci-url]: https://github.com/caian-org/list-github-stars/actions/workflows/ci.yml
 
-[gh-bnc-url]: https://github.com/caian-org/list-github-stars/actions/workflows/build-many.yml
+[gh-release-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/release.yml?label=release&logo=github&style=flat-square
+[gh-release-url]: https://github.com/caian-org/list-github-stars/actions/workflows/release.yml
 
-[gh-test-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/list-github-stars/test-many.yml?label=test&logo=github&style=for-the-badge
-[gh-test-url]: https://github.com/caian-org/list-github-stars/actions/workflows/test-many.yml
-
-[tag-shield]: https://img.shields.io/github/tag/caian-org/list-github-stars.svg?logo=git&logoColor=FFF&style=for-the-badge
+[tag-shield]: https://img.shields.io/github/tag/caian-org/list-github-stars.svg?logo=git&logoColor=FFF&style=flat-square
 [tag-url]: https://github.com/caian-org/list-github-stars/releases
 
 
 ### Usage
 
 Authentication is made via [personal access tokens][pat]. Create a token,
-export to the environment variable `GITHUB_TOKEN` and run. The output is sent
-to `STDOUT`, so to create a file, just do:
+export it to the environment variable `GITHUB_TOKEN`, and run. Output is
+written to `STDOUT`:
 
 ```sh
-./list-github-stars >> my-stars.md
+./bin/lgs > my-stars.md
 ```
 
-You can use external programs such as [`pandoc`][pandoc] to convert the output
-to other formats. E.g.:
+Flags:
+
+- `--token`, `-t` — GitHub PAT (defaults to `$GITHUB_TOKEN`).
+- `--user`, `-u` — list a different user's stars (defaults to the
+  authenticated user).
+- `--version`, `-v` — print version, commit, and build timestamp.
+
+You can use external programs such as [`pandoc`][pandoc] to convert the
+output to other formats:
 
 ```sh
 # MS Word document
-./list-github-stars | pandoc -o stars.docx
+./bin/lgs | pandoc -o stars.docx
 
 # HTML page
-./list-github-stars | pandoc -o stars.html
+./bin/lgs | pandoc -o stars.html
 
 # HTML page with custom stylesheet
-./list-github-stars | pandoc -o stars.html --self-contained --css=style.css
+./bin/lgs | pandoc -o stars.html --self-contained --css=style.css
 ```
 
 [pat]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [pandoc]: https://pandoc.org
 
+
 ### Run with Docker
 
+Images are published to GitHub Container Registry:
+
 ```sh
-docker run --rm -e GITHUB_TOKEN="your-github-auth-token" caian/list-github-stars >> stars.md
+docker run --rm \
+    -e GITHUB_TOKEN="your-github-auth-token" \
+    ghcr.io/caian-org/list-github-stars:latest > my-stars.md
 ```
+
+
+### Build from source
+
+This repo uses [`devbox`][devbox] + [`just`][just]. Inside `devbox shell`:
+
+```sh
+just build lgs              # produces ./bin/lgs
+./bin/lgs --version
+```
+
+Common targets:
+
+```sh
+just test                   # go test ./...
+just test-race              # go test ./... -race
+just lint                   # go vet ./...
+just release-check          # goreleaser check
+just release-snapshot       # local goreleaser dry-run into dist/
+```
+
+[devbox]: https://www.jetify.com/devbox
+[just]: https://github.com/casey/just
+
+
+### Releases
+
+Releases are tag-driven. Pushing a `v*` tag runs
+`.github/workflows/release.yml`, which uses GoReleaser to publish:
+
+- Multi-platform archives (`linux/darwin/windows × amd64/arm64`) attached
+  to a GitHub Release.
+- A Docker image to `ghcr.io/caian-org/list-github-stars:<tag>` and
+  `:latest`.
+
+A `daily-run` workflow rewrites a public gist with fresh output every day
+at 03:00 UTC, consuming the `:latest` image.
 
 
 ## License
 
-To the extent possible under law, [Caian Ertl][me] has waived __all copyright
-and related or neighboring rights to this work__. In the spirit of _freedom of
-information_, I encourage you to fork, modify, change, share, or do whatever
-you like with this project! [`^C ^V`][kopimi]
+To the extent possible under law, [Caian Ertl][me] has waived __all
+copyright and related or neighboring rights to this work__. In the spirit
+of _freedom of information_, I encourage you to fork, modify, change,
+share, or do whatever you like with this project! [`^C ^V`][kopimi]
 
 [![License][cc-shield]][cc-url]
 
