@@ -1,8 +1,10 @@
+version: "2"
+
 run:
   timeout: 5m
 
 linters:
-  disable-all: true
+  default: none
   enable:
     - errcheck
     - govet
@@ -11,20 +13,19 @@ linters:
     - unused
     - misspell
     - revive
+  settings:
+    revive:
+      rules:
+        - name: unused-parameter
+          disabled: true   # urfave/cli action handlers often ignore one parameter
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
+          - revive
+
+formatters:
+  enable:
     - gofmt
     - goimports
-
-linters-settings:
-  revive:
-    rules:
-      - name: unused-parameter
-        disabled: true   # urfave/cli action handlers often ignore one parameter
-
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck
-        - revive
-  max-issues-per-linter: 0
-  max-same-issues: 0
