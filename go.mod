@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v76 v76.0.0
 	github.com/gosimple/slug v1.15.0
 	github.com/stretchr/testify v1.11.1
-	github.com/urfave/cli/v3 v3.9.0
+	github.com/urfave/cli/v3 v3.9.1
 )
 
 require (
